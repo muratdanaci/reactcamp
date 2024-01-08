@@ -11,11 +11,16 @@ import {
   Icon,
   Menu,
   Table,
+  Button,
 } from "semantic-ui-react";
 import ProductService from "../services/productService";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../store/actions/cartActions";
+import { toast } from "react-toastify";
 
 export default function ProductList() {
+  const dispatch = useDispatch(); // çalıştırılacak fonksiyonu çağırır.
   const [products, setProducts] = useState([]);
   // products adında datam var.
   // default değeri boş bir array.
@@ -31,6 +36,20 @@ export default function ProductList() {
       });
   }, []);
 
+  const handleAddToCart = (product) => {
+    dispatch(addToCart(product));
+    toast.success(`${product.title} sepete eklendi!`, {
+      position: "bottom-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
+  };
+
   return (
     <div>
       <Table celled>
@@ -41,6 +60,7 @@ export default function ProductList() {
             <TableHeaderCell>Stok Adedi</TableHeaderCell>
             <TableHeaderCell>Açıklama</TableHeaderCell>
             <TableHeaderCell>Kategori</TableHeaderCell>
+            <TableHeaderCell></TableHeaderCell>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -53,6 +73,11 @@ export default function ProductList() {
               <TableCell>{product.stock}</TableCell>
               <TableCell>{product.description}</TableCell>
               <TableCell>{product.category}</TableCell>
+              <TableCell>
+                <Button onClick={() => handleAddToCart(product)}>
+                  Sepete Ekle
+                </Button>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
